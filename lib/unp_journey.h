@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <arpa/inet.h>
+#include <sys/wait.h>
 
 // Wrappers
 int SOCKET(int domain, int type, int protocol);
@@ -24,5 +25,10 @@ ssize_t readn(int fd, void *vptr, size_t n);
 ssize_t writen(int fd, const void *vptr, size_t n);
 ssize_t readline(int fd, void *vptr, size_t maxlen);
 ssize_t readlinebuf(void **vptrptr);
+
+// Signal Handler
+typedef void Sigfunc(int);
+Sigfunc *SIGNAL(int signo, Sigfunc *func);
+void sig_chld(int signo);
 
 #endif
