@@ -10,13 +10,24 @@
 #include <errno.h>
 #include <arpa/inet.h>
 #include <sys/wait.h>
+#include <stdarg.h>
+#include <sys/select.h>
+#include <sys/time.h>
 
 // Wrappers
 int SOCKET(int domain, int type, int protocol);
 void BIND(int sockfd, struct sockaddr *addr, socklen_t addrlen);
 void LISTEN(int sockfd, int backlog);
 int ACCEPT(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
-void err_sys(const char *err_msg);
+void CONNECT(int sockfd, struct sockaddr *addr, socklen_t addrlen);
+
+void err_sys(const char *fmt, ...);
+void err_quit(const char *fmt, ...);
+
+void INET_PTON(int af, const char *src, void *dst);
+
+char *FGETS(char *ptr, int n, FILE *stream);
+void FPUTS(const char *ptr, FILE *stream);
 
 #define MAXLINE 100
 

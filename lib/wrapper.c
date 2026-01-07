@@ -1,8 +1,27 @@
 #include "unp_journey.h"
 
-void err_sys(const char *err_msg)
+void err_sys(const char *fmt, ...)
 {
-	perror(err_msg);
+	va_list ap;
+
+	va_start(ap, fmt);
+	vfprintf(stderr, fmt, ap);
+	va_end(ap);
+
+	fprintf(stderr, ": %s\n", strerror(errno));
+
+	exit(1);
+}
+
+void err_quit(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	vfprintf(stderr, fmt, ap);
+	va_end(ap);
+	fprintf(stderr, "\n");
+
 	exit(1);
 }
 
@@ -47,5 +66,44 @@ again:
 	}
 
 	return fd;
+}
+
+void CONNECT(int sockfd, struct sockaddr *addr, socklen_t addrlen)
+{
+	if (connect(sockfd, addr, addrlen) == -1) {
+		err_sys("connect");
+	}
+}
+
+void INET_PTON(int af, const char *src, void *dst)
+{
+	int n;
+	
+	if ((n = inet_pton(af, src, dst)) <= 0) {
+		if (n == 0) {
+			err_quit("inet_pton: string is an invalid network address");
+		} else if (n == -1 && errno == EAFNOSUPPORT) {
+			err_quit("inet_pton: af is an invalid address family");
+		} else {
+			err_quit("inet_pton fail");
+		}
+	}
+}
+
+char *FGETS(char *ptr, int n, FILE *stream)
+{
+	char *rptr;
+	if ((rptr = fgets(ptr, n, stream)) == NULL && ferror(stream)) {
+		err_sys("fgets");
+	}
+
+	return rptr;
+}
+
+void FPUTS(const char *ptr, FILE *stream)
+{
+	if (fputs(ptr, stream) == EOF) {
+		err_sys("fputs");
+	}
 }
 
