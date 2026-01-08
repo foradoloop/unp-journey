@@ -29,6 +29,9 @@ void INET_PTON(int af, const char *src, void *dst);
 char *FGETS(char *ptr, int n, FILE *stream);
 void FPUTS(const char *ptr, FILE *stream);
 
+ssize_t READ(int fd, void *buf, size_t count);
+ssize_t WRITE(int fd, const void *buf, size_t count);
+
 #define MAXLINE 100
 
 // I/O Functions
@@ -41,5 +44,9 @@ ssize_t readlinebuf(void **vptrptr);
 typedef void Sigfunc(int);
 Sigfunc *SIGNAL(int signo, Sigfunc *func);
 void sig_chld(int signo);
+
+// Select
+int SELECT(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+int SHUTDOWN(int socket, int how);
 
 #endif
