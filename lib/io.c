@@ -1,5 +1,25 @@
 #include "unp_journey.h"
 
+ssize_t READ(int fd, void *buf, size_t count)
+{
+	ssize_t r = 0;
+	if ((r = read(fd, buf, count)) == -1) {
+		err_sys("read");
+	}
+
+	return r;
+}
+
+ssize_t WRITE(int fd, const void *buf, size_t count)
+{
+	ssize_t w = 0;
+	if ((w = write(fd, buf, count)) != count) {
+		err_sys("write");
+	}
+
+	return w;
+}
+
 static int read_cnt = 0;
 static char *read_ptr = NULL;
 static char read_buf[MAXLINE];
